@@ -10,7 +10,7 @@
                         By Sean Dvir
                     </span>
                 </v-flex>
-                <v-flex xs12 pt-4 offset-xs3>
+                <v-flex xs12 pt-4 offset-xs1>
                     <span class="title">
                     <a href="https://intuit.app.box.com/s/nicki9h5ra2qw0p8f1xzs5vzdlwzw70s">The Challenge</a>
                     </span>
@@ -96,7 +96,7 @@
                 set:          firstSet,
                 page:         1,
                 casesPerPage: 10,
-                solve:        true,
+                solve:        false,
             }
         },
 
