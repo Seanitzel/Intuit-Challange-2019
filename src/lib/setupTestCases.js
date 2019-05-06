@@ -1,3 +1,4 @@
+// Parses a text file with test cases input and returns an array of the test cases.
 export function formatTaskFile(file, node=false) {
     const dataRows = (node ? readFile(file) : file).split('\n')
 
@@ -14,13 +15,15 @@ export function formatTaskFile(file, node=false) {
             formattedData.testCases.push(testCase)
             testCase = newTestCase(rowAsArray)
             counter  = testCase.b + testCase.h
-        } else {
+        } else if(rowAsArray.length === 2){
             let positionType = 'boxPositions'
             if (counter <= testCase.h) {
                 positionType = 'hunterPositions'
             }
             counter--
             testCase[positionType].push(rowAsArray)
+        } else {
+            formattedData.testCases.push(testCase)
         }
     })
 
@@ -29,6 +32,7 @@ export function formatTaskFile(file, node=false) {
     return formattedData.testCases
 }
 
+// Initializes a new test case.
 function newTestCase(sizes) {
     return {
         n:               sizes[0],

@@ -1,5 +1,10 @@
 # Intuit Challange 2019
 
+Implementation of the [Intuit Challenge](https://intuit.app.box.com/s/nicki9h5ra2qw0p8f1xzs5vzdlwzw70s) 
+Solution in node, and a UI made using Vue.
+
+See [here](google.com).
+
 ## Project setup
 ```
 npm install
@@ -15,15 +20,7 @@ npm run serve
 npm run build
 ```
 
-### Run your tests
+### Transpiles and runs the node version of the project
 ```
-npm run test
+npm run dev
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

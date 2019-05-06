@@ -1,5 +1,6 @@
 import {TestCaseBuilder} from './TestCaseBuilder'
 
+// Represents a case solver.
 export class CaseSolver {
     constructor(testCase) {
         this.magicCarpet = TestCaseBuilder.build(testCase)
@@ -7,7 +8,7 @@ export class CaseSolver {
         this.huntersAdded = 0
     }
 
-    // For the first task
+    // For the first task - initializes segments for an even carpet.
     initEven() {
         const center = this.center
 
@@ -17,7 +18,7 @@ export class CaseSolver {
         this.bottomRightQuarter = CaseSolver.carpetSegment(center, this.n, center, this.n)
     }
 
-    // For the second task
+    // For the second task - initializes segments for an odd carpet.
     initOdd() {
         const center = this.center
 
@@ -37,7 +38,7 @@ export class CaseSolver {
         return {seg1, seg2}
     }
 
-    // Represents a carpet segment
+    // Returns a object representing a carpet segment.
     static carpetSegment(rowStart, rowEnd, colStart, colEnd) {
         return {
             hunters:          0,
@@ -69,52 +70,56 @@ export class CaseSolver {
             this.segmentCouple(solver.bottomLeftQuarter, solver.topRightQuarter),
         ]
 
-        let balancedSuccessfully = segmentCouples.every(({seg1, seg2}) => {
+        segmentCouples.forEach(({seg1, seg2}) => {
             return solver.balanceSegments(seg1, seg2)
         })
 
         if (solver.isOdd) {
-            balancedSuccessfully = this.oddPipeline(solver, segmentCouples)
+            this.oddPipeline(solver, segmentCouples)
         }
 
-        // if (!balancedSuccessfully) {
-        //     return {carpet: solver.magicCarpet, answer: -1}
-        // }
+        if (!solver.isBalanced()) {
+            return {carpet: solver.magicCarpet, answer: -1}
+        }
 
-        // segmentCouples.forEach(({seg1, seg2}) => {
-        //     solver.addMoreHunters(seg1, seg2)
-        // })
+        segmentCouples.forEach(({seg1, seg2}) => {
+            solver.addMoreHunters(seg1, seg2)
+        })
 
         return {carpet: solver.magicCarpet, answer: solver.huntersAdded}
     }
 
+    // Pipeline for test cases with an odd size
     static oddPipeline(solver, segmentCouples) {
         segmentCouples.push(this.segmentCouple(solver.centerLeft, solver.centerRight))
         segmentCouples.push(this.segmentCouple(solver.centerTop, solver.centerBottom))
         solver.finalTouch()
-        return solver.balanceSegmentsOdd(solver.topLeftQuarter, solver.centerTop, solver.centerLeft, solver.bottomRightQuarter, solver.centerBottom, solver.centerRight) &&
-            solver.balanceSegmentsOdd(solver.topRightQuarter, solver.centerTop, solver.centerRight, solver.bottomLeftQuarter, solver.centerBottom, solver.centerLeft)
+        return solver.balanceSegmentsOdd() && solver.balanceSegmentsOdd()
     }
 
-    //
+    // Returns the total number of hunters from an array of segments.
     static huntersInSegments(segments) {
         let hunters = 0
         segments.forEach(segment => hunters += segment.hunters)
         return hunters
     }
 
+    // Returns whether the magic carpet is odd type
     get isOdd() {
         return !!(this.magicCarpet.length % 2)
     }
 
+    // The size of the magic carpet
     get n() {
         return this.magicCarpet.length
     }
 
+    // Returns the [floored] center index of the magic carpet
     get center() {
         return Math.floor(this.magicCarpet.length / 2)
     }
 
+    // Evaluates a magic carpet - fills each segment with its number of hunters, boxes etc
     evaluateCarpet() {
         let segments = ['topLeftQuarter', 'bottomLeftQuarter', 'topRightQuarter', 'bottomRightQuarter']
 
@@ -128,6 +133,7 @@ export class CaseSolver {
         return this
     }
 
+    // Evaluates a segment from the magic carpet
     evaluateSegment(segment) {
         for (let i = segment.rowStart; i < segment.rowEnd; ++i) {
             for (let j = segment.colStart; j < segment.colEnd; ++j) {
@@ -136,6 +142,7 @@ export class CaseSolver {
         }
     }
 
+    // Updates the cell of a segment with the data from the carpet.
     updateSegment(cell, segment) {
         const value = this.magicCarpet[cell.row][cell.col]
 
@@ -149,6 +156,7 @@ export class CaseSolver {
         }
     }
 
+    // Adds hunter at an empty cell in a segment and the magic carpet, returns false if it didnt.
     addHunter(segment) {
         const cell = segment.emptyCellIndices.pop()
 
@@ -163,90 +171,88 @@ export class CaseSolver {
         return true
     }
 
+    // Whether the carpet is balanced.
     isBalanced() {
         return (this.topBottomBalanced() && this.leftRightBalanced())
     }
 
+    // Whether the top and bottom halfs are balanced.
     topBottomBalanced() {
         return (this.topHalfHunters === this.bottomHalfHunters)
     }
 
+    // Whether the left and right halfs are balanced.
     leftRightBalanced() {
         return (this.leftHalfHunters === this.rightHalfHunters)
     }
 
+    // Returns the number of hunters in the top half.
     get topHalfHunters() {
         const top = CaseSolver.huntersInSegments([this.topLeftQuarter, this.topRightQuarter])
         return this.isOdd ? top + this.centerTop.hunters : top
     }
 
+    // Returns the number of hunters in the bottom half.
     get bottomHalfHunters() {
         const bottom = CaseSolver.huntersInSegments([this.bottomLeftQuarter, this.bottomRightQuarter])
         return this.isOdd ? bottom + this.centerBottom.hunters : bottom
     }
 
+    // Returns the number of hunters in the left half.
     get leftHalfHunters() {
         const left = CaseSolver.huntersInSegments([this.topLeftQuarter, this.bottomLeftQuarter])
         return this.isOdd ? left + this.centerLeft.hunters : left
     }
 
+    // Returns the number of hunters in the right half.
     get rightHalfHunters() {
         const right = CaseSolver.huntersInSegments([this.topRightQuarter, this.bottomRightQuarter])
         return this.isOdd ? right + this.centerRight.hunters : right
     }
 
+    // if 2 segments can be balanced it balances them and returns true, else returns false.
     balanceSegments(seg1, seg2) {
         if (seg1.hunters === seg2.hunters) {
             return true
         }
 
         return seg1.hunters > seg2.hunters ?
-               this.balanceSegmentsHelper(seg1.hunters - seg2.hunters, seg2)
+               this.addHuntersToSegment(seg1.hunters - seg2.hunters, seg2)
                                            :
-               this.balanceSegmentsHelper(seg2.hunters - seg1.hunters, seg1)
+               this.addHuntersToSegment(seg2.hunters - seg1.hunters, seg1)
     }
 
-    balanceSegmentsHelper(difference, segment) {
-        while (difference && segment.emptyCellIndices.length) {
+    // Adds hunters to a segment in order to balance it, returns true if the number
+    // of hunters couldn't be added.
+    addHuntersToSegment(hunters, segment) {
+        while (hunters && segment.emptyCellIndices.length) {
             if (!this.addHunter(segment)) {
                 break
             }
-            difference--
+            hunters--
         }
 
-        return !difference
+        return !hunters
     }
 
-    balanceSegmentsOdd(seg1, seg1Center, seg1CenterSide, seg2, seg2Center, seg2CenterSide) {
-        // const h1 = CaseSolver.huntersInSegments([seg1, seg1Center]),
-        //       h2 = CaseSolver.huntersInSegments([seg2, seg2Center]),
-        //       h3 = CaseSolver.huntersInSegments([seg1, seg1CenterSide]),
-        //       h4 = CaseSolver.huntersInSegments([seg2, seg2CenterSide])
-        //
-        // if (h1 !== h2) {
-        //     h1 > h2 ? this.balanceSegmentsHelper(h1 - h2, seg2Center) :
-        //     this.balanceSegmentsHelper(h2 - h1, seg1Center)
-        // }
-        //
-        // if (h3 !== h4) {
-        //     h3 > h4 ? this.balanceSegmentsHelper(h3 - h4, seg2CenterSide) :
-        //     this.balanceSegmentsHelper(h4 - h3, seg1CenterSide)
-        // }
+    // Attempts to balance an odd carpet, returns true it did, else false
+    balanceSegmentsOdd() {
         if (!this.topBottomBalanced()) {
             const difference = this.topHalfHunters - this.bottomHalfHunters
-            difference > 0 ? this.balanceSegmentsHelper(difference, this.centerBottom) :
-            this.balanceSegmentsHelper(Math.abs(difference), this.centerTop)
+            difference > 0 ? this.addHuntersToSegment(difference, this.centerBottom) :
+            this.addHuntersToSegment(Math.abs(difference), this.centerTop)
         }
 
         if (!this.leftRightBalanced()) {
             const difference = this.leftHalfHunters - this.rightHalfHunters
-            difference > 0 ? this.balanceSegmentsHelper(difference, this.centerLeft) :
-            this.balanceSegmentsHelper(Math.abs(difference), this.centerRight)
+            difference > 0 ? this.addHuntersToSegment(difference, this.centerRight) :
+            this.addHuntersToSegment(Math.abs(difference), this.centerLeft)
         }
 
         return this.isBalanced()
     }
 
+    // Adds hunters to the maximum in 2 segments of the carpet.
     addMoreHunters(segment1, segment2) {
         while (segment1.emptyCellIndices.length && segment2.emptyCellIndices.length) {
             this.addHunter(segment2)
@@ -254,6 +260,7 @@ export class CaseSolver {
         }
     }
 
+    // Only for odd carpets, fills the center if possible.
     finalTouch() {
         if (this.isOdd) {
             const CENTER = Math.floor(this.n / 2)

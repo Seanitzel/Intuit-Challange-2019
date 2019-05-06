@@ -2,21 +2,15 @@ import {formatTaskFile} from './setupTestCases'
 import {CaseSolver}     from './CaseSolver'
 import fs               from 'fs'
 
-const firstSet  = '/task-1.txt'
-const secondSet = '/task-2.txt'
-
+//Gets a file name, parses and solves all the test cases in it, and creates a file with the result.
 function generateResults(file) {
     let res = formatTaskFile(file, true).map((testCase, i) => {
         return `Case #${i + 1}: ${CaseSolver.solve(testCase).answer}\n`
     })
 
-    // res = formatTaskFile(file, true).slice(135, 145).map((testCase, i) => {
-    //     return `Case #${i + 131}: ${CaseSolver.solve(testCase).answer}\n`
-    // })
-
     res = res.toString().replace(/[,]+/g, '')
 
-    fs.writeFile(`./${file}-answers2.txt`, res, (err) => {
+    fs.writeFile(`./${file} Solution.txt`, res, (err) => {
         if (err) {
             console.log(err)
             return
@@ -25,14 +19,8 @@ function generateResults(file) {
     })
 }
 
-function forceGC() {
-    if (global.gc) {
-        global.gc()
-    } else {
-        console.warn('No GC hook! Start your program as `node --expose-gc file.js`.')
-    }
-}
+// Solving the tasks!
+['/task-1.txt', '/task-2.txt'].forEach(fileName => generateResults(fileName))
 
-generateResults(firstSet)
 
 

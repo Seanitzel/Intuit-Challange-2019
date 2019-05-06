@@ -10,6 +10,14 @@
                         By Sean Dvir
                     </span>
                 </v-flex>
+                <v-flex xs12 pt-4 offset-xs3>
+                    <span class="title">
+                    <a href="https://intuit.app.box.com/s/nicki9h5ra2qw0p8f1xzs5vzdlwzw70s">The Challenge</a>
+                    </span>
+                    <span class="black--text caption">
+                        &emsp; *Only test cases where N < 70 were implemented.
+                    </span>
+                </v-flex>
                 <v-flex xs12>
                     <v-switch style="justify-content:center"
                               v-model="solve"
@@ -85,12 +93,10 @@
                 active:       null,
                 sets:         [firstSet, secondSet],
                 setTypes:     ['Even', 'Odd'],
-                set:          secondSet,
+                set:          firstSet,
                 page:         1,
                 casesPerPage: 10,
                 solve:        true,
-                t1:           21,
-                t2:           22,
             }
         },
 
@@ -99,19 +105,16 @@
                 return formatTaskFile(this.set.default).filter(testCase => testCase.n < 70)
             },
             magicCarpets: function () {
-                // return this.cases.slice((this.page - 1) * this.casesPerPage, this.page * this.casesPerPage).map(testCase =>
-                //     new CaseSolver(testCase).magicCarpet)
-                return this.cases.slice(this.t1, this.t2).map(testCase =>
+                return this.cases.slice((this.page - 1) * this.casesPerPage, this.page * this.casesPerPage).map(testCase =>
                     new CaseSolver(testCase).magicCarpet)
             },
 
             solvedMagicCarpets: function () {
-                // return this.solve ?
-                //        this.cases.slice((this.page - 1) * this.casesPerPage, this.page *
-                //            this.casesPerPage).map(testCase => CaseSolver.solve(testCase))
-                //                   :
-                //        null
-                return this.cases.slice(this.t1, this.t2).map(testCase => CaseSolver.solve(testCase))
+                return this.solve ?
+                       this.cases.slice((this.page - 1) * this.casesPerPage, this.page *
+                           this.casesPerPage).map(testCase => CaseSolver.solve(testCase))
+                                  :
+                       null
             },
         },
     }

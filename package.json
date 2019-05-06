@@ -5,7 +5,7 @@
     "scripts": {
         "serve": "vue-cli-service serve",
         "build": "vue-cli-service build",
-        "dev": "npx babel src/lib --out-dir lib && node --max-old-space-size=32768 --expose-gc lib/index.js"
+        "dev": "npx babel src/lib --out-dir lib && node --max-old-space-size=8192 lib/index.js"
     },
     "dependencies": {
         "@babel/polyfill": "^7.0.0-rc.1",
