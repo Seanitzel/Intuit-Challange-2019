@@ -1,5 +1,5 @@
-export function formatTaskFile(file) {
-    const dataRows = file.split('\n')
+export function formatTaskFile(file, node=false) {
+    const dataRows = (node ? readFile(file) : file).split('\n')
 
     const formattedData = {
         length:    parseInt(dataRows.splice(0, 1)[0]),
@@ -37,4 +37,17 @@ function newTestCase(sizes) {
         boxPositions:    [],
         hunterPositions: [],
     }
+}
+
+
+ // Reads a file and returns its contents as a string.
+function readFile(filename) {
+    const fs = require('fs')
+
+    return fs.readFileSync(__dirname + filename, 'utf8', function (err, data) {
+        if (err) {
+            throw err
+        }
+        return data
+    })
 }

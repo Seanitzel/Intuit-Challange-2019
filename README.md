@@ -1,4 +1,4 @@
-# note-art-demo2
+# Intuit Challange 2019
 
 ## Project setup
 ```

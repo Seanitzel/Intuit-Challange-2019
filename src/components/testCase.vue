@@ -1,17 +1,17 @@
 <template>
     <div class="table-container">
-        <table v-if="data.length<200" class="table table-responsive">
+        <table v-if="solved!==-1" class="table table-responsive">
             <tr v-for="(row, i) in data"
                 :class="">
                 <td v-for="(col, j) in row"
                     :class="[j === data.length / 2 ? 'middleHorizontal' : '', i === data.length / 2 ? 'middleVertical' : '']">
                     <span class="font-weight-bold display-1">
-                        {{data[i][j]}}
+                        {{data[i][j] || 0}}
                     </span>
                 </td>
             </tr>
         </table>
-        <span v-else class="display-1">This one is too big... :(</span>
+        <span v-else class="display-1">Bad Day for the hunters...Not Solvable</span>
     </div>
 </template>
 
@@ -19,7 +19,10 @@
 
     export default {
         name:  'test-case',
-        props: ['data'],
+        props: {
+            data:   {type: Array, default: null},
+            solved: {type: Number, default: 1},
+        },
     }
 </script>
 
@@ -36,7 +39,7 @@
 
     table {
         border-collapse:  collapse;
-        display: inline-table;
+        display:          inline-table;
         border:           5px solid black;
         margin:           10px;
         background-color: yellow;
