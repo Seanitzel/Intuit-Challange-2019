@@ -3,7 +3,11 @@
 Implementation of the [Intuit Challenge](https://intuit.app.box.com/s/nicki9h5ra2qw0p8f1xzs5vzdlwzw70s) 
 Solution in node, and a UI made using Vue.
 
-See [here](google.com).
+The code written to solve the problem is in src/lib/.
+
+The ES5 transpiled code is in lib/.
+
+See [here](https://eloquent-bell-be9a7a.netlify.com/).
 
 ## Project setup
 ```

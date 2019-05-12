@@ -15,7 +15,7 @@
                     <a href="https://intuit.app.box.com/s/nicki9h5ra2qw0p8f1xzs5vzdlwzw70s">The Challenge</a>
                     </span>
                     <span class="black--text caption">
-                        &emsp; *Only test cases where N < 70 were implemented.
+                        &emsp; *Only test cases where N < 70 are shown..
                     </span>
                 </v-flex>
                 <v-flex xs12>
