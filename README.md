@@ -7,7 +7,7 @@ The code written to solve the problem is in src/lib/.
 
 The ES5 transpiled code is in lib/.
 
-See [here](https://eloquent-bell-be9a7a.netlify.com/).
+See [here](https://intuit-challange-2019-solved.netlify.com/).
 
 ## Project setup
 ```
